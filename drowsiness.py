@@ -103,8 +103,9 @@ class DrowsinessCNN(nn.Module):
             nn.MaxPool2d(2), nn.Dropout2d(0.25),
         )
         self.classifier = nn.Sequential(
+            nn.AdaptiveAvgPool2d((1, 1)),
             nn.Flatten(),
-            nn.Linear(128 * 8 * 8, 256), nn.ReLU(), nn.Dropout(0.5),
+            nn.Linear(128, 256), nn.ReLU(), nn.Dropout(0.5),
             nn.Linear(256, 2),
         )
 

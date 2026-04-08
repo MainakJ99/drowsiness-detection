@@ -2,72 +2,75 @@
 
 ## Overview
 
-This project implements a deep learning-based system to detect driver drowsiness using eye-state classification. The model is trained to classify whether a person is **alert (open eyes)** or **drowsy (closed eyes)** and supports real-time detection using a webcam.
+This project implements a real-time driver drowsiness detection system using a Convolutional Neural Network (CNN) to classify eye states as **alert (open)** or **drowsy (closed)**. The system supports both model training and live webcam-based inference.
 
-The system operates in two modes:
-
-* **Training Mode** – trains the CNN model on labeled eye images
-* **Detection Mode** – performs real-time drowsiness detection
+The pipeline combines deep learning with classical computer vision (face detection) and incorporates basic temporal smoothing for stable predictions.
 
 ---
 
-## Features
+## Key Features
 
-* CNN-based binary classification (Alert vs Drowsy)
+* CNN-based binary classification (alert vs drowsy)
+* Modular pipeline:
+
+  * `train.py` → model training
+  * `detect.py` → real-time inference
+  * `model.py` → architecture definition
 * Real-time webcam detection using OpenCV
-* Face and eye detection with fallback mechanism
-* Temporal smoothing for stable predictions
-* Training visualization (loss, accuracy)
-* Confusion matrix and classification report
+* Face-based region extraction for inference
+* Training evaluation with accuracy and classification report
 
 ---
 
 ## Project Structure
 
-```
+```id="s9k2zl"
 .
-├── train/
-│   ├── Open_Eyes/
-│   └── Closed_Eyes/
-├── drowsiness.py
-├── drowsiness_model.pth
-├── confusion_matrix.png
-├── training_curves.png
+├── train/                     # Dataset (Open_Eyes / Closed_Eyes)
+├── model.py                  # CNN architecture
+├── train.py                  # Training pipeline
+├── detect.py                 # Real-time detection
+├── outputs/
+│   ├── confusion_matrix.png
+│   └── training_curves.png
 ├── requirements.txt
-└── README.md
+├── README.md
+└── .gitignore
 ```
 
 ---
 
 ## Dataset
 
-The dataset should be organized as:
+The dataset is organized as:
 
-* `Open_Eyes/` → label **0 (alert)**
-* `Closed_Eyes/` → label **1 (drowsy)**
+* `train/Open_Eyes/` → label 0 (alert)
+* `train/Closed_Eyes/` → label 1 (drowsy)
+
+Images are converted to grayscale and resized to 64×64 before training.
 
 ---
 
 ## Installation
 
-1. Clone the repository:
+Clone the repository:
 
-```
+```id="2rfbde"
 git clone https://github.com/your-username/drowsiness-detection.git
 cd drowsiness-detection
 ```
 
-2. Create virtual environment:
+Create a virtual environment:
 
-```
+```id="v3m2vd"
 python -m venv venv
-source venv/bin/activate      # Linux/Mac
-venv\Scripts\activate         # Windows
+venv\Scripts\activate        # Windows
+source venv/bin/activate     # Linux/Mac
 ```
 
-3. Install dependencies:
+Install dependencies:
 
-```
+```id="u4r8p1"
 pip install -r requirements.txt
 ```
 
@@ -75,27 +78,25 @@ pip install -r requirements.txt
 
 ## Usage
 
-### 1. Train the Model
+### Train the Model
 
+```id="tq9x0y"
+python train.py
 ```
-python drowsiness.py --mode train
-```
 
-This will:
+Outputs:
 
-* Train the CNN model
-* Save the model as `drowsiness_model.pth`
-* Generate:
-
-  * `training_curves.png`
-  * `confusion_matrix.png`
+* Trained model (`.pth`)
+* Training curves
+* Confusion matrix
+* Classification report
 
 ---
 
-### 2. Run Real-Time Detection
+### Run Real-Time Detection
 
-```
-python drowsiness.py --mode detect
+```id="k0p8ax"
+python detect.py
 ```
 
 Controls:
@@ -106,30 +107,32 @@ Controls:
 
 ## Model Architecture
 
-* Convolutional Neural Network (CNN)
 * Input: grayscale images (64×64)
-* 3 convolutional blocks with batch normalization and dropout
+* 3 convolutional blocks:
+
+  * Conv → BatchNorm → ReLU → Pooling → Dropout
+* Adaptive pooling to remove size dependency
 * Fully connected classifier
 
 ---
 
 ## Results
 
-Example outputs:
+The model is evaluated using:
 
-* Confusion Matrix
-* Training Accuracy and Loss Curves
-* Real-time detection with probability scores
+* Accuracy
+* Precision, Recall, F1-score
+* Confusion matrix
+
+(Example results should be inserted here for completeness)
 
 ---
 
-## Key Techniques
+## System Design Highlights
 
-* Data augmentation (rotation, flip)
-* Dropout regularization
-* Learning rate scheduling
-* Temporal smoothing for stable predictions
-
+* Uses face detection to localize region of interest
+* Falls back to full-face inference when eyes are not detected
+* Applies simple temporal smoothing to reduce prediction noise
 
 
 ---

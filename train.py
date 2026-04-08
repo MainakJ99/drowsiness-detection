@@ -1,4 +1,4 @@
-py"""
+"""
 train.py
 ========
 Trains the DrowsinessCNN on your eye dataset.
